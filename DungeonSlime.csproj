@@ -13,6 +13,7 @@
     <ItemGroup>
         <None Remove="Icon.ico"/>
         <None Remove="Icon.bmp"/>
+        <None Remove="MonoGameLibrary\**" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Icon.ico">
@@ -21,13 +22,14 @@
         <EmbeddedResource Include="Icon.bmp">
             <LogicalName>Icon.bmp</LogicalName>
         </EmbeddedResource>
+        <EmbeddedResource Remove="MonoGameLibrary\**" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.*"/>
         <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.*"/>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="MonoGameLibrary\MonoGameLibrary.csproj" />
+      <Compile Remove="MonoGameLibrary\**" />
     </ItemGroup>
     <Target Name="RestoreDotnetTools" BeforeTargets="CollectPackageReferences">
         <Message Text="Restoring dotnet tools (this might take a while depending on your internet speed and should only happen upon building your project for the first time, or after upgrading MonoGame, or clearing your nuget cache)" Importance="High"/>
