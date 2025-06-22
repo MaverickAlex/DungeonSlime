@@ -10,6 +10,8 @@ namespace DungeonSlime;
 
 public class Game1 : Core
 {
+  // Speed multiplier when moving.
+  private const float MOVEMENT_SPEED = 5.0f;
 
   // Defines the slime animated sprite.
   private AnimatedSprite _slime;
