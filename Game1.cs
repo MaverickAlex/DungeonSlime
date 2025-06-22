@@ -1,7 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using MonoGameLibrary;
 using MonoGameLibrary.Graphics;
 using MonoGameLibrary.Input;
@@ -22,6 +24,7 @@ public class Game1 : Core
   // Tracks the position of the slime.
   private Vector2 _slimePosition;
 
+
   // Tracks the position of the bat.
   private Vector2 _batPosition;
 
@@ -34,8 +37,11 @@ public class Game1 : Core
   // Defines the bounds of the room that the slime and bat are contained within.
   private Rectangle _roomBounds;
 
-  // Speed multiplier when moving.
-  private const float MOVEMENT_SPEED = 5.0f;
+  // The sound effect to play when the bat bounces off the edge of the screen.
+  private SoundEffect _bounceSoundEffect;
+
+  // The sound effect to play when the slime eats a bat.
+  private SoundEffect _collectSoundEffect;
 
   public Game1() : base("Dungeon Slime", 1280, 720, false)
   {
@@ -81,6 +87,27 @@ public class Game1 : Core
     // Create the tilemap from the XML configuration file.
     _tilemap = Tilemap.FromFile(Content, "images/tilemap-definition.xml");
     _tilemap.Scale = new Vector2(4.0f, 4.0f);
+
+    // Load the bounce sound effect
+    _bounceSoundEffect = Content.Load<SoundEffect>("audio/bounce");
+
+    // Load the collect sound effect
+    _collectSoundEffect = Content.Load<SoundEffect>("audio/collect");
+
+    // Load the background theme music
+    Song theme = Content.Load<Song>("audio/theme");
+
+    // Ensure media player is not already playing on device, if so, stop it
+    if (MediaPlayer.State == MediaState.Playing)
+    {
+      MediaPlayer.Stop();
+    }
+
+    // Play the background theme music.
+    MediaPlayer.Play(theme);
+
+    // Set the theme music to repeat.
+    MediaPlayer.IsRepeating = true;
   }
 
   protected override void Update(GameTime gameTime)
@@ -178,6 +205,9 @@ public class Game1 : Core
     if (normal != Vector2.Zero)
     {
       _batVelocity = Vector2.Reflect(_batVelocity, normal);
+
+      // Play the bounce sound effect
+      _bounceSoundEffect.Play();
     }
 
     _batPosition = newBatPosition;
@@ -195,6 +225,9 @@ public class Game1 : Core
 
       // Assign a new random velocity to the bat
       AssignRandomBatVelocity();
+
+      // Play the collect sound effect
+      _collectSoundEffect.Play();
     }
 
     base.Update(gameTime);
